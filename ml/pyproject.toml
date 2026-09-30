@@ -1,0 +1,20 @@
+[project]
+name = "factorypulse-ml"
+version = "0.1.0"
+description = "Shared ML package: data loading, features, training — used identically by training scripts and the inference service"
+requires-python = ">=3.10"
+dependencies = [
+    "torch>=2.2.0",
+    "numpy>=1.26.0",
+    "pandas>=2.2.0",
+    "scikit-learn>=1.4.0",
+    "lightgbm>=4.3.0",
+    "scipy>=1.12.0",
+    "mlflow>=2.10.0",
+]
+
+[project.optional-dependencies]
+dev = ["pytest", "pytest-cov", "ruff", "mypy"]
+
+[tool.setuptools.packages.find]
+where = ["src"]

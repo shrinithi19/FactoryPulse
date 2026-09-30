@@ -1,0 +1,27 @@
+# --- Python ---
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+.venv/
+
+# --- Data (DVC-tracked) ---
+data/raw/
+data/processed/
+*.h5
+*.pt
+*.onnx
+*.pkl
+
+# --- Environment ---
+.env
+*.log
+
+# --- IDE / OS ---
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# --- Docker ---
+docker-compose.override.yml

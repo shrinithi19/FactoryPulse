@@ -1,0 +1,83 @@
+version: "3.9"
+
+services:
+  timescaledb:
+    image: timescale/timescaledb:latest-pg16
+    container_name: fp-timescaledb
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${DB_USER:-factorypulse}
+      POSTGRES_PASSWORD: ${DB_PASS:-fp_dev_2024}
+      POSTGRES_DB: ${DB_NAME:-factorypulse}
+    ports:
+      - "5432:5432"
+    volumes:
+      - timescale_data:/var/lib/postgresql/data
+      - ./scripts/init_db.sql:/docker-entrypoint-initdb.d/01_init_db.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-factorypulse} -d ${DB_NAME:-factorypulse}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    container_name: fp-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  qdrant:
+    image: qdrant/qdrant:latest
+    container_name: fp-qdrant
+    restart: unless-stopped
+    ports:
+      - "6333:6333"
+      - "6334:6334"
+    volumes:
+      - qdrant_data:/qdrant/storage
+
+  mosquitto:
+    image: eclipse-mosquitto:2
+    container_name: fp-mosquitto
+    restart: unless-stopped
+    ports:
+      - "1883:1883"
+    volumes:
+      - ./config/mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
+      - mosquitto_data:/mosquitto/data
+
+  mlflow:
+    image: ghcr.io/mlflow/mlflow:latest
+    container_name: fp-mlflow
+    restart: unless-stopped
+    depends_on:
+      timescaledb:
+        condition: service_healthy
+    command: >
+      mlflow server
+      --backend-store-uri sqlite:////mlflow/data/mlflow.db
+      --default-artifact-root /mlflow/artifacts
+      --host 0.0.0.0
+      --port 5000
+    ports:
+      - "5000:5000"
+    volumes:
+      - mlflow_data:/mlflow/data
+      - mlflow_artifacts:/mlflow/artifacts
+
+  # Application services (simulator, ingestion, inference, alerting,
+  # copilot, console) are added to this compose file starting M2 — this
+  # milestone is infrastructure only.
+
+volumes:
+  timescale_data:
+  qdrant_data:
+  mosquitto_data:
+  mlflow_data:
+  mlflow_artifacts:

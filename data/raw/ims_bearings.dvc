@@ -1,0 +1,6 @@
+outs:
+- md5: 26e4140e4054ec04a45db50d5b54336f.dir
+  size: 204
+  nfiles: 1
+  hash: md5
+  path: ims_bearings

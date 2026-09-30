@@ -1,0 +1,6 @@
+outs:
+- md5: 03a6a39bbfc54d8977e443aa5d982e5d.dir
+  size: 192
+  nfiles: 1
+  hash: md5
+  path: ai4i_2020

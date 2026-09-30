@@ -6,7 +6,11 @@ dist/
 .venv/
 
 # --- Data (DVC-tracked) ---
-data/raw/
+# NOTE: data/raw/ is intentionally NOT blanket-ignored here — DVC manages
+# ignoring the actual dataset contents via its own nested .gitignore
+# (written automatically by `dvc add`), while .dvc pointer files and
+# data/raw/.gitignore itself stay tracked in Git. Blanket-ignoring
+# data/raw/ here would also hide those pointer files.
 data/processed/
 *.h5
 *.pt

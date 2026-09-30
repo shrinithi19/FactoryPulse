@@ -1,0 +1,6 @@
+outs:
+- md5: 06fa23f40ef31ea646b0515efb57f485.dir
+  size: 180
+  nfiles: 1
+  hash: md5
+  path: cmapss
